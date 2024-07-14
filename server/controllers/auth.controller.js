@@ -6,6 +6,12 @@ import errorHandler from '../utils/error.js';
 const register = async (req, res, next) => {
     const user = req.body;
     user.password = bcryptjs.hashSync(user.password, 10);
+    if(user.gender === 'male'){
+        user.profilePic = `https://avatar.iran.liara.run/public/boy?username=${user.fullName}`;
+    }
+    else{
+        user.profilePic = `https://avatar.iran.liara.run/public/girl?username=${user.fullName}`;
+    }
     const newUser = new User(user);
     try {
         await newUser.save();
@@ -26,7 +32,7 @@ const login = async (req, res, next) => {
             validUser.password
         );
         if (!validPassword) return next(errorHandler(401, "wrong credentials"));
-        const token = jwt.sign({ id: validUser._id, username: validUser.username, fullName: validUser.fullName }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: validUser._id}, process.env.JWT_SECRET);
         const { password: pass, ...rest } = validUser._doc;
         res
             .cookie("access_token", token, { httpOnly: true })
