@@ -7,10 +7,10 @@ const register = async (req, res, next) => {
     const user = req.body;
     user.password = bcryptjs.hashSync(user.password, 10);
     if(user.gender === 'male'){
-        user.profilePic = `https://avatar.iran.liara.run/public/boy?username=${user.fullName}`;
+        user.profilePic = `https://avatar.iran.liara.run/public/boy?username=${user.username}`;
     }
     else{
-        user.profilePic = `https://avatar.iran.liara.run/public/girl?username=${user.fullName}`;
+        user.profilePic = `https://avatar.iran.liara.run/public/girl?username=${user.username}`;
     }
     const newUser = new User(user);
     try {
