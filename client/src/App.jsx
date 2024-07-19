@@ -5,6 +5,8 @@ import SignUp from './pages/SignUp.jsx';
 import Home from './pages/Home.jsx';
 import { Toaster } from 'react-hot-toast';
 import { UserProvider } from './context/authContext.jsx';
+import PrivateRoute from './components/PrivateRoute.jsx';
+
 function App() {
   return (
     <BrowserRouter>
@@ -12,7 +14,9 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
-          <Route path="/" element={<Home />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<Home />} />
+          </Route>
         </Routes>
         <Toaster />
       </UserProvider>

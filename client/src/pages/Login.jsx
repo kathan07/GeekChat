@@ -7,7 +7,7 @@ function Login() {
   const navigate = useNavigate();
   const [credentials, setcredentials] = useState({});
   const [loading,setloading] = useState(false);
-  const {user ,updateUser } = useUser();
+  const {updateUser } = useUser();
   const handleChange = (e) => {
     setcredentials({ ...credentials, [e.target.id]: e.target.value });
   };
@@ -23,8 +23,9 @@ function Login() {
         body: JSON.stringify(credentials),
       });
       const data = await res.json();
-      if (data.error) {
-				throw new Error(data.error);
+      console.log(data);
+      if (!data.success && data.success !== undefined) {
+				throw new Error(data.message);
 			}
       localStorage.setItem("chat-user", JSON.stringify(data));
       updateUser(data);
@@ -103,7 +104,7 @@ function Login() {
                   disabled={loading}
                   className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Sign in
+                  {loading===true? "Loading": "Login"}
                 </button>
               </div>
             </form>
