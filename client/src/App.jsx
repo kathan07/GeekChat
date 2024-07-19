@@ -4,17 +4,19 @@ import Login from "./pages/Login.jsx"
 import SignUp from './pages/SignUp.jsx';
 import Home from './pages/Home.jsx';
 import { Toaster } from 'react-hot-toast';
-
+import { UserProvider } from './context/authContext.jsx';
 function App() {
   return (
-      <BrowserRouter>
+    <BrowserRouter>
+      <UserProvider>
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path="/" element={<Home />} />
         </Routes>
         <Toaster />
-      </BrowserRouter>
+      </UserProvider>
+    </BrowserRouter>
   )
 }
 

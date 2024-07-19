@@ -1,11 +1,13 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../context/authContext";
 
 function Login() {
   const navigate = useNavigate();
   const [credentials, setcredentials] = useState({});
   const [loading,setloading] = useState(false);
+  const {user ,updateUser } = useUser();
   const handleChange = (e) => {
     setcredentials({ ...credentials, [e.target.id]: e.target.value });
   };
@@ -25,6 +27,7 @@ function Login() {
 				throw new Error(data.error);
 			}
       localStorage.setItem("chat-user", JSON.stringify(data));
+      updateUser(data);
       navigate('/');
     } catch (error) {
         toast.error(error.message);
