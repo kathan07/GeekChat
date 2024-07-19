@@ -1,8 +1,20 @@
 import React from 'react'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login.jsx"
+import SignUp from './pages/SignUp.jsx';
+import Home from './pages/Home.jsx';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
-    <div>Hello World</div>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<SignUp />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+        <Toaster />
+      </BrowserRouter>
   )
 }
 

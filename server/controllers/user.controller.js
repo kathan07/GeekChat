@@ -5,7 +5,7 @@ async function getAllUsersWithRecentConversations(currentUserId) {
   try {
     const users = await User.aggregate([
       // Match all users except the current user
-      { $match: { _id: { $ne: new mongoose.Types.ObjectId(currentUserId) } } },
+      { $match: { _id: { $ne: currentUserId } } },
 
       // Lookup the most recent conversation with the current user
       {
