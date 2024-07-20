@@ -1,44 +1,91 @@
-import { useState } from 'react';
-import { IoCloseOutline } from 'react-icons/io5';
-import { IoLogOutOutline } from 'react-icons/io5';
+import { useState, useEffect } from "react";
+import { IoCloseOutline } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
 import { useUser } from "../context/authContext";
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useConversation } from "../context/conversationContext.jsx";
 
-const Sidebar = ({ contacts, isOpen, toggleSidebar }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setloading] = useState(false);
   const { clearUser } = useUser();
   const navigate = useNavigate();
+  const [cloading, setcloading] = useState(false);
+  const [contacts, setContacts] = useState(null);
+  const { selectedConversation, setSelectedConversation } = useConversation();
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   const logout = async () => {
     setloading(true);
     try {
-      const res = await fetch('/server/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      const res = await fetch("/server/auth/logout");
       const data = await res.json();
       if (!data.success && data.success !== undefined) {
-				throw new Error(data.message);
-			}
+        throw new Error(data.message);
+      }
       clearUser();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
       toast.error(error.message);
     } finally {
       setloading(false);
     }
-  }
+  };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+  const getConversation = async () => {
+    setcloading(true);
+    try {
+      const res = await fetch("/server/user");
+      const data = await res.json();
+      if (!data.success && data.success !== undefined) {
+        throw new Error(data.message);
+      }
+      setContacts(data);
+      if (data.length > 0) {
+        setSelectedConversation(data[0]._id); // Assuming each contact has an _id
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setcloading(false);
+    }
+  };
+
+  const search = async (e) => {
+    if (e.key === "Enter") {
+      setIsSearching(true);
+      setSearchResults(null);
+
+      // Simulate an async operation (you can remove this if your actual search is async)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const results = contacts.filter(
+        (contact) =>
+          contact.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          contact.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      setSearchResults(results);
+      setIsSearching(false);
+    }
+  };
+
+  useEffect(() => {
+    getConversation();
+  }, []);
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-800 border-r border-slate-600 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}>
+    <div
+      className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-800 border-r border-slate-600 transform ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}
+    >
       {/* Sidebar Header */}
       <header className="p-4 border-b border-slate-600 bg-slate-800 text-gray-200">
         <div className="flex items-center justify-between">
@@ -60,29 +107,93 @@ const Sidebar = ({ contacts, isOpen, toggleSidebar }) => {
           type="text"
           placeholder="Search contacts..."
           value={searchTerm}
-          onChange={handleSearchChange}
+          onChange={handleSearch}
+          onKeyDown={search}
           className="w-full p-2 rounded-md border border-slate-600 bg-slate-700 placeholder-gray-400 text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
         />
       </div>
 
       {/* Contact List */}
       <div className="overflow-y-auto flex-grow p-3">
-        {contacts.map((contact) => (
-          <div key={contact.id} className="flex items-center mb-4 cursor-pointer hover:bg-slate-700 p-2 rounded-md">
-            <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
-              <img src={contact.avatar} alt={`${contact.name} Avatar`} className="w-full h-full rounded-full" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-base font-semibold text-gray-200 truncate">{contact.name}</h2>
-              <p className="text-sm text-gray-400 truncate">{contact.message}</p>
-            </div>
+        {isSearching ? (
+          <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
-        ))}
+        ) : searchResults !== null ? (
+          searchResults.length > 0 ? (
+            searchResults.map((contact) => (
+              <div
+                key={contact._id}
+                className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${
+                  selectedConversation === contact._id
+                    ? "bg-slate-600 hover:bg-slate-500"
+                    : "hover:bg-slate-700"
+                }`}
+                onClick={() => setSelectedConversation(contact._id)}
+              >
+                <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
+                  <img
+                    src={contact.profilePic}
+                    alt={`${contact.username} Avatar`}
+                    className="w-full h-full rounded-full"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-base font-semibold text-gray-200 truncate">
+                    {contact.username}
+                  </h2>
+                  <p className="text-sm text-gray-400 truncate">
+                    {contact.fullName}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-gray-400">No such user exists</div>
+          )
+        ) : cloading ? (
+          <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : contacts && contacts.length > 0 ? (
+          contacts.map((contact) => (
+            <div
+              key={contact._id}
+              className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${
+                selectedConversation === contact._id
+                  ? "bg-slate-600 hover:bg-slate-500"
+                  : "hover:bg-slate-700"
+              }`}
+              onClick={() => setSelectedConversation(contact._id)}
+            >
+              <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
+                <img
+                  src={contact.profilePic}
+                  alt={`${contact.username} Avatar`}
+                  className="w-full h-full rounded-full"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="text-base font-semibold text-gray-200 truncate">
+                  {contact.username}
+                </h2>
+                <p className="text-sm text-gray-400 truncate">
+                  {contact.fullName}
+                </p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-400">No contacts found</div>
+        )}
       </div>
 
       {/* Logout Button */}
       <div className="p-4 border-t border-slate-600">
-        <button className="flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200" onClick={logout}>
+        <button
+          className="flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200"
+          onClick={logout}
+        >
           <IoLogOutOutline size={20} className="mr-2" />
           Logout
         </button>
