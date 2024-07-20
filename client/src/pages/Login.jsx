@@ -23,7 +23,6 @@ function Login() {
         body: JSON.stringify(credentials),
       });
       const data = await res.json();
-      console.log(data);
       if (!data.success && data.success !== undefined) {
 				throw new Error(data.message);
 			}

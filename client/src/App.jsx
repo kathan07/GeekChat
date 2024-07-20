@@ -6,19 +6,22 @@ import Home from './pages/Home.jsx';
 import { Toaster } from 'react-hot-toast';
 import { UserProvider } from './context/authContext.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
+import { ConversationProvider } from './context/conversationContext.jsx';
 
 function App() {
   return (
     <BrowserRouter>
       <UserProvider>
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/" element={<Home />} />
-          </Route>
-        </Routes>
-        <Toaster />
+        <ConversationProvider>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<Home />} />
+            </Route>
+          </Routes>
+          <Toaster />
+        </ConversationProvider>
       </UserProvider>
     </BrowserRouter>
   )
