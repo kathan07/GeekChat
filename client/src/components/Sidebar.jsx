@@ -1,9 +1,37 @@
 import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import { IoLogOutOutline } from 'react-icons/io5';
+import { useUser } from "../context/authContext";
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Sidebar = ({ contacts, isOpen, toggleSidebar }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setloading] = useState(false);
+  const { clearUser } = useUser();
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    setloading(true);
+    try {
+      const res = await fetch('/server/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = res.json();
+      if (!data.success && data.success !== undefined) {
+				throw new Error(data.message);
+			}
+      clearUser();
+      navigate('/login');
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setloading(false);
+    }
+  }
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -54,7 +82,7 @@ const Sidebar = ({ contacts, isOpen, toggleSidebar }) => {
 
       {/* Logout Button */}
       <div className="p-4 border-t border-slate-600">
-        <button className="flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200">
+        <button className="flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200" onClick={logout}>
           <IoLogOutOutline size={20} className="mr-2" />
           Logout
         </button>
