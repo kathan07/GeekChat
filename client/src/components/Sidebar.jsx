@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       }
       setContacts(data);
       if (data.length > 0) {
-        setSelectedConversation(data[0]._id); // Assuming each contact has an _id
+        setSelectedConversation(data[0]); // Assuming each contact has an _id
       }
     } catch (error) {
       toast.error(error.message);
@@ -82,12 +82,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 z-30 w-64 bg-slate-800 border-r border-slate-600 transform ${
+      className={`fixed inset-y-0 left-0 z-30 w-80 bg-slate-800 border-r border-slate-600 transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}
     >
       {/* Sidebar Header */}
-      <header className="p-4 border-b border-slate-600 bg-slate-800 text-gray-200">
+      <header className="p-4 border-b border-slate-600 bg-slate-800 text-gray-200 h-20">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold truncate">
             Chat<span className="text-blue-300">App</span>
@@ -125,7 +125,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <div
                 key={contact._id}
                 className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${
-                  selectedConversation === contact._id
+                  selectedConversation._id === contact._id
                     ? "bg-slate-600 hover:bg-slate-500"
                     : "hover:bg-slate-700"
                 }`}
@@ -160,11 +160,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <div
               key={contact._id}
               className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${
-                selectedConversation === contact._id
+                selectedConversation._id === contact._id
                   ? "bg-slate-600 hover:bg-slate-500"
                   : "hover:bg-slate-700"
               }`}
-              onClick={() => setSelectedConversation(contact._id)}
+              onClick={() => setSelectedConversation(contact)}
             >
               <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
                 <img
@@ -189,12 +189,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </div>
 
       {/* Logout Button */}
-      <div className="p-4 border-t border-slate-600">
+      <div className="p-4 h-20 border-t border-slate-600">
         <button
           className="flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200"
           onClick={logout}
         >
-          <IoLogOutOutline size={20} className="mr-2" />
+          <IoLogOutOutline size={30} className="mr-2" />
           Logout
         </button>
       </div>
