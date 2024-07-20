@@ -20,7 +20,7 @@ const Sidebar = ({ contacts, isOpen, toggleSidebar }) => {
           'Content-Type': 'application/json',
         }
       });
-      const data = res.json();
+      const data = await res.json();
       if (!data.success && data.success !== undefined) {
 				throw new Error(data.message);
 			}

@@ -1,9 +1,32 @@
 import Sidebar from "../components/Sidebar.jsx";
 import ChatArea from "../components/ChatArea.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [cloading, setcloading] = useState(false);
+
+  const getConversation = async () => {
+    setcloading(true);
+    try {
+      const res = await fetch('/server/user');
+      const data = await res.json();
+      if (!data.success && data.success !== undefined) {
+				throw new Error(data.message);
+			}
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setcloading(false);
+    }
+  }
+
+  useEffect(() => {
+    getConversation();
+  }, []);
+
+
   const contacts = [
     { id: 1, name: 'Alice', message: 'Hoorayy!!', avatar: 'https://placehold.co/200x/ffa8e4/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato' },
     { id: 2, name: 'Bob', message: 'How are you?', avatar: 'https://placehold.co/200x/a8d5ff/ffffff.svg?text=ʕ•́ᴥ•̀ʔ&font=Lato' },

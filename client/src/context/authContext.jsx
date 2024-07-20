@@ -3,13 +3,14 @@ import { createContext, useState, useContext, useEffect } from 'react';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("chat-user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("chat-user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    setIsLoading(false);
   }, []);
 
   const updateUser = (userData) => {
@@ -23,7 +24,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, updateUser, clearUser }}>
+    <UserContext.Provider value={{ user, updateUser, clearUser, isLoading }}>
       {children}
     </UserContext.Provider>
   );
