@@ -1,8 +1,9 @@
 import { IoMenuOutline, IoCallOutline, IoVideocamOutline } from 'react-icons/io5';
 import { useConversation } from "../context/conversationContext.jsx";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useUser } from '../context/authContext.jsx';
+import { format, isToday, isYesterday } from 'date-fns';
 
 
 const ChatArea = ({ toggleSidebar }) => {
@@ -10,6 +11,19 @@ const ChatArea = ({ toggleSidebar }) => {
     const [message, setMessage] = useState({ message: '' });
 
     const { user } = useUser();
+
+    const messagesEndRef = useRef(null);
+
+    const formatMessageDate = (date) => {
+        const messageDate = new Date(date);
+        if (isToday(messageDate)) {
+            return format(messageDate, "'Today at' HH:mm");
+        } else if (isYesterday(messageDate)) {
+            return format(messageDate, "'Yesterday at' HH:mm");
+        } else {
+            return format(messageDate, "dd MMM yyyy 'at' HH:mm");
+        }
+    };
 
     const handleMessage = (e) => {
         setMessage({ message: e.target.value });
@@ -32,6 +46,7 @@ const ChatArea = ({ toggleSidebar }) => {
                 throw new Error(data.message);
             }
             setMessage({ message: '' }); // Clear the input after sending
+            getMessage();
 
         } catch (error) {
             toast.error(error.message);
@@ -50,9 +65,19 @@ const ChatArea = ({ toggleSidebar }) => {
             toast.error(error.message);
         }
     }
-    useEffect(()=>{
-        getMessage();
-    },[selectedConversation])
+
+
+    useEffect(() => {
+        if (selectedConversation) {
+            getMessage();
+        } else {
+            setMessages([]);
+        }
+    }, [selectedConversation]);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
 
     if (selectedConversation === undefined) {
@@ -106,11 +131,15 @@ const ChatArea = ({ toggleSidebar }) => {
                                 <img src={selectedConversation.profilePic} alt={`${selectedConversation.username} Avatar`} className="w-8 h-8 rounded-full" />
                             </div>
                         )}
-                        <div className={`flex max-w-96 ${message.senderId===user._id ? 'bg-indigo-600' : 'bg-slate-800'} rounded-lg p-3 gap-3`}>
+                        <div className={`flex flex-col max-w-96 ${message.senderId === user._id ? 'bg-indigo-600' : 'bg-slate-800'} rounded-lg p-3 gap-1`}>
                             <p className="text-gray-200">{message.message}</p>
+                            <span className="text-xs text-gray-400 self-end">
+                                {formatMessageDate(message.createdAt)}
+                            </span>
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
 
             {/* Chat Input */}
