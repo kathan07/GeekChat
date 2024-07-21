@@ -5,6 +5,7 @@ import { useUser } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useConversation } from "../context/conversationContext.jsx";
+import { useSocketContext } from "../context/socketContext.jsx";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
   const [searchResults, setSearchResults] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+  const { onlineUsers } = useSocketContext();
 
   const logout = async () => {
     setloading(true);
@@ -74,6 +76,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   useEffect(() => {
     getConversation();
+
   }, []);
 
   const handleSearch = (e) => {
@@ -82,9 +85,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 z-30 w-80 bg-slate-800 border-r border-slate-600 transform ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}
+      className={`fixed inset-y-0 left-0 z-30 w-80 bg-slate-800 border-r border-slate-600 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+        } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}
     >
       {/* Sidebar Header */}
       <header className="p-4 border-b border-slate-600 bg-slate-800 text-gray-200 h-20">
@@ -124,11 +126,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             searchResults.map((contact) => (
               <div
                 key={contact._id}
-                className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${
-                  selectedConversation._id === contact._id
+                className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${selectedConversation._id === contact._id
                     ? "bg-slate-600 hover:bg-slate-500"
                     : "hover:bg-slate-700"
-                }`}
+                  }`}
                 onClick={() => setSelectedConversation(contact._id)}
               >
                 <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
@@ -159,11 +160,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           contacts.map((contact) => (
             <div
               key={contact._id}
-              className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${
-                selectedConversation._id === contact._id
+              className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${selectedConversation._id === contact._id
                   ? "bg-slate-600 hover:bg-slate-500"
                   : "hover:bg-slate-700"
-              }`}
+                }`}
               onClick={() => setSelectedConversation(contact)}
             >
               <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
@@ -175,7 +175,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-base font-semibold text-gray-200 truncate">
-                  {contact.username}
+                  {onlineUsers.includes(contact._id) && (
+                    <span className="text-xs bg-green-500 text-slate-800 px-1.5 py-0.5 rounded-full">
+                      Online
+                    </span>
+                  )}
                 </h2>
                 <p className="text-sm text-gray-400 truncate">
                   {contact.fullName}

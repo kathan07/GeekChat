@@ -1,12 +1,12 @@
-import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import connectDB from './db/db.js';
 import authRoute from './routes/auth.route.js';
 import messageRoute from './routes/message.route.js';
 import userRoute from './routes/user.route.js';
+import { app, server } from './socket/socket.js';
+import express from 'express';
 
-const app = express()
 app.use(express.json());
 dotenv.config();
 
@@ -29,6 +29,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
