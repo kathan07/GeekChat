@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useUser } from '../context/authContext.jsx';
 import { format, isToday, isYesterday } from 'date-fns';
+import {useSocketContext} from '../context/socketContext.jsx';
 
 
 const ChatArea = ({ toggleSidebar }) => {
@@ -13,6 +14,8 @@ const ChatArea = ({ toggleSidebar }) => {
     const { user } = useUser();
 
     const messagesEndRef = useRef(null);
+
+    const {socket} = useSocketContext(); 
 
     const formatMessageDate = (date) => {
         const messageDate = new Date(date);
@@ -75,9 +78,17 @@ const ChatArea = ({ toggleSidebar }) => {
         }
     }, [selectedConversation]);
 
+
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
+    useEffect(() => {
+        socket?.on("newMessage", (newMessage) => {
+            setMessages([...messages, newMessage]);
+        });
+        return () => socket?.off("newMessage");
+    },[socket, setMessages, messages])
 
 
     if (selectedConversation === undefined) {
