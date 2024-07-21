@@ -6,8 +6,10 @@ import messageRoute from './routes/message.route.js';
 import userRoute from './routes/user.route.js';
 import { app, server } from './socket/socket.js';
 import express from 'express';
+import cors from 'cors';
 
 app.use(express.json());
+app.use(cors());
 dotenv.config();
 
 const port = process.env.PORT;
