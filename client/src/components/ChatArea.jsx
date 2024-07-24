@@ -4,18 +4,18 @@ import { useEffect, useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useUser } from '../context/authContext.jsx';
 import { format, isToday, isYesterday } from 'date-fns';
-import {useSocketContext} from '../context/socketContext.jsx';
-
+import { useSocketContext } from '../context/socketContext.jsx';
 
 const ChatArea = ({ toggleSidebar }) => {
-    const { messages, setMessages, selectedConversation } = useConversation();
+    const { messages, setMessages, selectedConversation} = useConversation();
+    
     const [message, setMessage] = useState({ message: '' });
 
     const { user } = useUser();
 
     const messagesEndRef = useRef(null);
 
-    const {socket} = useSocketContext(); 
+    const { socket, onlineUsers } = useSocketContext();
 
     const formatMessageDate = (date) => {
         const messageDate = new Date(date);
@@ -88,7 +88,7 @@ const ChatArea = ({ toggleSidebar }) => {
             setMessages([...messages, newMessage]);
         });
         return () => socket?.off("newMessage");
-    },[socket, setMessages, messages])
+    }, [socket, setMessages, messages])
 
 
     if (selectedConversation === undefined) {
@@ -123,14 +123,14 @@ const ChatArea = ({ toggleSidebar }) => {
                         <h1 className="text-xl font-semibold">{selectedConversation.username}</h1>
                     </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                {onlineUsers.includes(selectedConversation._id) && <div className="flex items-center space-x-2">
                     <button className="p-2 rounded-full bg-slate-700 text-gray-300 hover:bg-slate-600">
                         <IoCallOutline size={24} />
                     </button>
                     <button className="p-2 rounded-full bg-slate-700 text-gray-300 hover:bg-slate-600">
                         <IoVideocamOutline size={24} />
                     </button>
-                </div>
+                </div>}
             </header>
 
             {/* Chat Messages */}
