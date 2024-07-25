@@ -17,6 +17,8 @@ const ChatArea = ({ toggleSidebar }) => {
 
     const { socket } = useSocketContext();
 
+    const [wait,setWait] = useState(false); 
+
     const formatMessageDate = (date) => {
         const messageDate = new Date(date);
         if (isToday(messageDate)) {
@@ -35,7 +37,6 @@ const ChatArea = ({ toggleSidebar }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!message.message.trim()) return; // Prevent sending empty messages
-
         try {
             const res = await fetch(`/server/messages/send/${selectedConversation._id}`, {
                 method: 'POST',
@@ -69,6 +70,16 @@ const ChatArea = ({ toggleSidebar }) => {
         }
     }
 
+    const handleRecommend = (e) => {
+        e.preventDefault();
+        const recentMessagesText = messages.slice(-10)
+            .map(({ fullName, message }) => `${fullName}: ${message}`)
+            .join('\n');
+        socket.emit("getRecommandation", { user, chat: recentMessagesText });
+        setWait(true);
+
+    }
+
 
     useEffect(() => {
         if (selectedConversation) {
@@ -89,6 +100,15 @@ const ChatArea = ({ toggleSidebar }) => {
         });
         return () => socket?.off("newMessage");
     }, [socket, setMessages, messages])
+
+
+    useEffect(() => {
+        socket?.on("sendRecommandation", (response) => {
+            setWait(false);
+            setMessage({ message: response });
+        });
+        return () => socket?.off("sendRecommandation");
+    }, []);
 
 
     if (selectedConversation === undefined) {
@@ -155,9 +175,17 @@ const ChatArea = ({ toggleSidebar }) => {
                         id='message'
                         value={message.message}
                         onChange={handleMessage}
+                        disabled={wait}
                     />
-                    <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded-md ml-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded-md ml-2 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={wait}>
                         Send
+                    </button>
+                    <button
+                        type="button"
+                        className="bg-green-600 text-white px-2 py-2 rounded-md ml-2 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        onClick={handleRecommend}
+                    >
+                        Recommend
                     </button>
                 </form>
             </footer>
