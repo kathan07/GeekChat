@@ -127,8 +127,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <div
                 key={contact._id}
                 className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${selectedConversation._id === contact._id
-                    ? "bg-slate-600 hover:bg-slate-500"
-                    : "hover:bg-slate-700"
+                  ? "bg-slate-600 hover:bg-slate-500"
+                  : "hover:bg-slate-700"
                   }`}
                 onClick={() => setSelectedConversation(contact)}
               >
@@ -140,9 +140,19 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-base font-semibold text-gray-200 truncate">
-                    {contact.username}
-                  </h2>
+                  <div className="flex space-x-2">
+                    <h2 className="text-base font-semibold text-gray-200 truncate">
+                      {contact.username}
+                    </h2>
+                    <h2 className="text-base font-semibold text-gray-200 truncate">
+                      {onlineUsers.includes(contact._id) && (
+                        <span className="text-xs bg-green-500 text-slate-800 px-1.5 py-0.5 rounded-full">
+                          Online
+                        </span>
+                      )}
+                    </h2>
+                  </div>
+
                   <p className="text-sm text-gray-400 truncate">
                     {contact.fullName}
                   </p>
@@ -161,8 +171,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <div
               key={contact._id}
               className={`flex items-center mb-4 cursor-pointer p-2 rounded-md transition-colors duration-200 ${selectedConversation._id === contact._id
-                  ? "bg-slate-600 hover:bg-slate-500"
-                  : "hover:bg-slate-700"
+                ? "bg-slate-600 hover:bg-slate-500"
+                : "hover:bg-slate-700"
                 }`}
               onClick={() => setSelectedConversation(contact)}
             >
@@ -174,13 +184,18 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="text-base font-semibold text-gray-200 truncate">
-                  {onlineUsers.includes(contact._id) && (
-                    <span className="text-xs bg-green-500 text-slate-800 px-1.5 py-0.5 rounded-full">
-                      Online
-                    </span>
-                  )}
-                </h2>
+                <div className="flex space-x-2">
+                  <h2 className="text-base font-semibold text-gray-200 truncate">
+                    {contact.username}
+                  </h2>
+                  <h2 className="text-base font-semibold text-gray-200 truncate">
+                    {onlineUsers.includes(contact._id) && (
+                      <span className="text-xs bg-green-500 text-slate-800 px-1.5 py-0.5 rounded-full">
+                        Online
+                      </span>
+                    )}
+                  </h2>
+                </div>
                 <p className="text-sm text-gray-400 truncate">
                   {contact.fullName}
                 </p>
