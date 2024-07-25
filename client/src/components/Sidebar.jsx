@@ -89,9 +89,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}
     >
       {/* Sidebar Header */}
-      <header className="p-4 bg-slate-800 text-gray-200 h-20">
+      <header className="p-4 bg-slate-800 text-gray-200 h-20 mt-2 ml-2">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold truncate">
+          <h1 className="text-2xl font-semibold truncate">
             Chat<span className="text-blue-300">App</span>
           </h1>
           <button
@@ -130,7 +130,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     ? "bg-slate-600 hover:bg-slate-500"
                     : "hover:bg-slate-700"
                   }`}
-                onClick={() => setSelectedConversation(contact._id)}
+                onClick={() => setSelectedConversation(contact)}
               >
                 <div className="w-10 h-10 bg-slate-600 rounded-full mr-3 flex-shrink-0">
                   <img
