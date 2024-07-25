@@ -89,7 +89,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}
     >
       {/* Sidebar Header */}
-      <header className="p-4 border-b border-slate-600 bg-slate-800 text-gray-200 h-20">
+      <header className="p-4 bg-slate-800 text-gray-200 h-20">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold truncate">
             Chat<span className="text-blue-300">App</span>
@@ -193,7 +193,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </div>
 
       {/* Logout Button */}
-      <div className="p-4 h-20 border-t border-slate-600">
+      <div className="p-6 h-16 mb-2">
         <button
           className="flex items-center text-gray-400 hover:text-gray-200 transition-colors duration-200"
           onClick={logout}
