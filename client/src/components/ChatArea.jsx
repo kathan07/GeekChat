@@ -17,7 +17,7 @@ const ChatArea = ({ toggleSidebar }) => {
 
     const { socket } = useSocketContext();
 
-    const [wait,setWait] = useState(false); 
+    const [wait, setWait] = useState(false);
 
     const formatMessageDate = (date) => {
         const messageDate = new Date(date);
