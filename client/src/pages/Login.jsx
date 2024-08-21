@@ -41,8 +41,8 @@ function Login() {
       <div className="flex flex-col py-9 px-8  border-slate-400 shadow-2xl bg-slate-800 rounded-xl border-opacity-70 border">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-200">
-            Chat
-            <span className="text-blue-300">App</span>
+            Geek
+            <span className="text-blue-300">Chat</span>
           </h2>
         </div>
 

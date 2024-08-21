@@ -92,7 +92,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <header className="p-4 bg-slate-800 text-gray-200 h-20 mt-2 ml-2">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold truncate">
-            Chat<span className="text-blue-300">App</span>
+           Geek<span className="text-blue-300">Chat</span>
           </h1>
           <button
             className="md:hidden p-2 rounded-md bg-slate-700 text-gray-300 hover:bg-slate-600"
