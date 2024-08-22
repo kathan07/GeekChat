@@ -15,7 +15,7 @@ GeekChat is a real-time chat application that allows users to send messages, and
 - **Frontend**:
   - [React.js](https://reactjs.org/) - A JavaScript library for building user interfaces.
   - [Socket.IO-client](https://socket.io/docs/v4/client-api/) - A client-side library for real-time, bidirectional, and event-based communication.
-  - [ContextApi]([https://redux.js.org/](https://legacy.reactjs.org/docs/context.html)) - A state management API for JavaScript apps.
+  - [ContextApi](https://legacy.reactjs.org/docs/context.html) - A state management API for JavaScript apps.
   - [React Router](https://reactrouter.com/) - A library for handling client-side routing in React applications.
   - [Tailwind]() - A library for styling React components..
 - **Backend**:
