@@ -48,9 +48,10 @@ GeekChat is a real-time chat application that allows users to send messages, and
    
    ```bash
    JWT_SECRET = ""
-    PORT = 
-    MONGO_URL = ""
-    API_KEY = ""
+   PORT = 
+   MONGO_URL = ""
+   API_KEY = ""
+   GEMINI_API_KEY = ""
 
 5. Install node modules
    
